@@ -10,12 +10,14 @@ import { renderAbout } from './about.js';
 import { renderKnowledgeCenter } from './knowledge-center.js';
 import { renderBoardroom } from './boardroom.js';
 import { renderAccessControl } from './access-control.js';
+import { renderHoursPerEmployee } from './hours-per-employee.js';
 
 const REGISTRY = {
   about: renderAbout,
   'knowledge-center': renderKnowledgeCenter,
   boardroom: renderBoardroom,
   'access-control': renderAccessControl,
+  'hours-per-employee': renderHoursPerEmployee,
 };
 
 /** Shared across renders so a segmented control keeps its choice on repaint. */

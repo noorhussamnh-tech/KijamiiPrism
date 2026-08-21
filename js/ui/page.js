@@ -166,10 +166,10 @@ export function tag(text, variant = 'neutral') {
 export function awaitingData(view) {
   return el('section', { class: 'awaiting' }, [
     el('div', { class: 'awaiting__mark', 'aria-hidden': 'true' }),
-    el('h2', { class: 'awaiting__title', text: 'Waiting on source data' }),
+    el('h2', { class: 'awaiting__title', text: 'Not wired up yet' }),
     el('p', {
       class: 'awaiting__body',
-      text: 'The layout, filters and figures for this view are built. It needs these columns before it can show a real number:',
+      text: 'The workbook is synced and these columns are already in the database — this view has not been connected to them yet. It reads:',
     }),
     el(
       'ul',
@@ -180,5 +180,17 @@ export function awaitingData(view) {
       class: 'awaiting__hint',
       text: 'Deliberately blank rather than filled with placeholder figures — a chart with invented numbers is indistinguishable from a real one at a glance.',
     }),
+  ]);
+}
+
+/** Sync freshness, for the footer of a live view. */
+export function syncFootnote(status) {
+  if (!status) return null;
+  const when = status.last_run_finished ?? status.last_run_started;
+  const stamp = when ? new Date(when).toLocaleString('en-GB') : 'unknown';
+  const issues = Number(status.issue_count ?? 0);
+  return el('p', { class: 'panel__footnote' }, [
+    `Last synced ${stamp} · ${status.status}`,
+    issues ? ` · ${issues} value${issues === 1 ? '' : 's'} quarantined rather than guessed` : '',
   ]);
 }

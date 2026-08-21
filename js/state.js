@@ -11,10 +11,11 @@
 const state = {
   session: null,
   profile: null,
-  clients: [],
-  projects: [],
-  tasks: [],
   team: [],
+  // The whole Prism record, loaded once at sign-in. Null until it arrives, so
+  // views can tell "not yet fetched" from "fetched and empty".
+  prism: null,
+  syncStatus: null,
   loading: true,
 };
 
@@ -45,11 +46,6 @@ export function setState(patch) {
 
 /** Sort helpers keep list order stable as realtime events arrive out of order. */
 const SORTERS = {
-  clients: (a, b) => a.name.localeCompare(b.name),
-  projects: (a, b) => a.name.localeCompare(b.name),
-  tasks: (a, b) =>
-    a.priority - b.priority ||
-    (a.due_date ?? '9999-12-31').localeCompare(b.due_date ?? '9999-12-31'),
   team: (a, b) => (a.full_name ?? a.email).localeCompare(b.full_name ?? b.email),
 };
 
@@ -78,10 +74,9 @@ export function clearData() {
   Object.assign(state, {
     session: null,
     profile: null,
-    clients: [],
-    projects: [],
-    tasks: [],
     team: [],
+    prism: null,
+    syncStatus: null,
     loading: false,
   });
   notify();
