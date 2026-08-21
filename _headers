@@ -1,0 +1,25 @@
+# Netlify headers.
+#
+# The app ships as unbundled ES modules at stable URLs, so a browser that
+# caches js/views/index.js will keep running last week's build even after a
+# deploy — and because modules import each other by fixed path, a version
+# query on the entry point does not reach them. Revalidation is the fix:
+# these files are small, a 304 costs almost nothing, and nobody ever sees a
+# half-updated app.
+/js/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/styles/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# The page holds no third-party embeds and talks only to Supabase and the two
+# Google Fonts hosts, so it can afford a strict policy.
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://gwepxpyfgtgagceguyhm.supabase.co wss://gwepxpyfgtgagceguyhm.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'

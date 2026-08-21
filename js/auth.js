@@ -53,7 +53,7 @@ export async function signOut() {
 export async function loadProfile(userId) {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, full_name, role, created_at')
+    .select('id, email, full_name, role, is_approved, created_at')
     .eq('id', userId)
     .maybeSingle();
   if (error) throw error;
@@ -67,7 +67,7 @@ export async function loadProfile(userId) {
 export async function loadTeam() {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, full_name, role, created_at')
+    .select('id, email, full_name, role, is_approved, created_at')
     .order('created_at');
   if (error) throw error;
   return data ?? [];
@@ -77,6 +77,24 @@ export async function setRole(userId, role) {
   const { data, error } = await supabase
     .from('profiles')
     .update({ role })
+    .eq('id', userId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Approve or revoke an account's access to the record.
+ *
+ * A member calling this is refused by the database, not by the absence of a
+ * button — the guard trigger on profiles rejects any approval change from a
+ * non-admin.
+ */
+export async function setApproval(userId, isApproved) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ is_approved: isApproved })
     .eq('id', userId)
     .select()
     .single();

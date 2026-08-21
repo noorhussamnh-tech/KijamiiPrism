@@ -13,6 +13,7 @@ import { getState, setState, clearData, replaceCollection, subscribe } from './s
 import { currentRoute, onRouteChange } from './router.js';
 import { getView } from './nav.js';
 import { renderAuthView } from './ui/auth-view.js';
+import { renderPendingView } from './ui/pending-view.js';
 import { renderShell, getOutlet, setRealtimeStatus, highlightRoute } from './ui/shell.js';
 import { renderView } from './views/index.js';
 import { reportError } from './ui/toast.js';
@@ -57,6 +58,15 @@ async function enterApp(session) {
   try {
     const profile = await loadProfile(session.user.id);
     setState({ profile });
+
+    // An unapproved account can authenticate but reads nothing, so loading the
+    // dashboard would render a screen of zeros that looks like a broken app
+    // rather than a closed door. Say what is actually happening instead.
+    if (profile && !profile.is_approved && profile.role !== 'admin') {
+      setState({ loading: false });
+      renderPendingView(app, { profile, onSignOut: handleSignOut });
+      return;
+    }
 
     const [prism, team, syncStatus, syncIssues] = await Promise.all([
       loadPrism(),
