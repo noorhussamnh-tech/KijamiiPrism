@@ -68,6 +68,15 @@ export function renderRegionalActuals(root, view) {
   const measurableHours = summary.filter((r) => r.measurable).reduce((s, r) => s + r.hours, 0);
   const unmeasuredRev = summary.filter((r) => !r.measurable).reduce((s, r) => s + r.rev, 0);
 
+  // Region lives on the job-book row, so a client with effort but no revenue
+  // cannot be placed in one. Those hours are real and must be accounted for
+  // somewhere rather than silently vanishing from the page.
+  const allWindowHours = timeDedication
+    .filter((t) => inWindow(t.month_start))
+    .reduce((s, t) => s + Number(t.hours), 0);
+  const placedHours = summary.reduce((s, r) => s + r.hours, 0);
+  const unplacedHours = allWindowHours - placedHours;
+
   root.append(
     toolbar([
       tag(`${regionCodes.length} REGIONS`, 'neutral'),
@@ -91,7 +100,14 @@ export function renderRegionalActuals(root, view) {
 
     kpiRow([
       { label: 'Recognized revenue', value: fmt.money(totalRev), meta: 'All regions, converted' },
-      { label: 'Measured effort', value: fmt.hours(measurableHours), meta: 'Egypt and UAE only' },
+      // Effort only lands in a region when the client also appears in the job
+      // book, since region is a job-book column. Clients with hours but no
+      // revenue row have no region and fall out of this total — stated rather
+      // than quietly dropped.
+      { label: 'Effort placed by region', value: fmt.hours(measurableHours),
+        meta: unplacedHours
+          ? `${fmt.hours(unplacedHours)} more recorded against clients with no region on file`
+          : 'Egypt and UAE only' },
       { label: 'Revenue without effort data', value: fmt.money(unmeasuredRev),
         meta: 'Regions filing no timesheets', tone: unmeasuredRev ? 'note' : undefined },
       { label: 'Regions', value: String(regionCodes.length), meta: 'Present in the job book' },

@@ -15,6 +15,15 @@ import { renderHoursCoverage } from './hours-coverage.js';
 import { renderEvidenceExceptions } from './evidence-exceptions.js';
 import { renderRevenueConcentration } from './revenue-concentration.js';
 import { renderRegionalActuals } from './regional-actuals.js';
+import { renderWorkloadPressure } from './workload-pressure.js';
+import { renderRevenueVsHours } from './revenue-vs-hours.js';
+import { renderRevenueHoursService } from './revenue-hours-service.js';
+import { renderProjectsTicketSize } from './projects-ticket-size.js';
+import { renderScopeVsEffort } from './scope-vs-effort.js';
+import { renderActualVsAssumed } from './actual-vs-assumed.js';
+import { renderClientIntelligence } from './client-intelligence.js';
+import { renderCommercialDirection } from './commercial-direction.js';
+import { renderDashboard } from './dashboard.js';
 
 const REGISTRY = {
   about: renderAbout,
@@ -26,6 +35,15 @@ const REGISTRY = {
   'evidence-exceptions': renderEvidenceExceptions,
   'revenue-concentration': renderRevenueConcentration,
   'regional-actuals': renderRegionalActuals,
+  'workload-pressure': renderWorkloadPressure,
+  'revenue-vs-hours': renderRevenueVsHours,
+  'revenue-hours-service': renderRevenueHoursService,
+  'projects-ticket-size': renderProjectsTicketSize,
+  'scope-vs-effort': renderScopeVsEffort,
+  'actual-vs-assumed': renderActualVsAssumed,
+  'client-intelligence': renderClientIntelligence,
+  'commercial-direction': renderCommercialDirection,
+  dashboard: renderDashboard,
 };
 
 /** Shared across renders so a segmented control keeps its choice on repaint. */
