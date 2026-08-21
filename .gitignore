@@ -13,3 +13,9 @@
 
 # Broken self-referencing symlink (.claude/.claude -> .claude)
 .claude/.claude
+
+# Credentials — never commit
+.env
+.env.*
+*service-account*.json
+*credentials*.json
