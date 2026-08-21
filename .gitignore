@@ -3,3 +3,13 @@
 
 # macOS
 .DS_Store
+
+# Symlink to .claude — committing it would duplicate that tree in the repo
+/Claude Config
+
+# Third-party design references saved from Dribbble. Kept locally as visual
+# reference; not redistributed, since this repository is public.
+/Default inspiration designs/
+
+# Broken self-referencing symlink (.claude/.claude -> .claude)
+.claude/.claude
