@@ -7,7 +7,7 @@
  * before it decides what to show.
  */
 import { getSession, onAuthStateChange, signOut, loadProfile, loadTeam } from './auth.js';
-import { loadPrism, loadSyncStatus } from './data/prism.js';
+import { loadPrism, loadSyncStatus, loadSyncIssues } from './data/prism.js';
 import { subscribeToChanges, unsubscribeFromChanges } from './realtime.js';
 import { getState, setState, clearData, replaceCollection, subscribe } from './state.js';
 import { currentRoute, onRouteChange } from './router.js';
@@ -58,13 +58,14 @@ async function enterApp(session) {
     const profile = await loadProfile(session.user.id);
     setState({ profile });
 
-    const [prism, team, syncStatus] = await Promise.all([
+    const [prism, team, syncStatus, syncIssues] = await Promise.all([
       loadPrism(),
       loadTeam(),
       loadSyncStatus(),
+      loadSyncIssues(),
     ]);
     replaceCollection('team', team);
-    setState({ prism, syncStatus, loading: false });
+    setState({ prism, syncStatus, syncIssues, loading: false });
 
     renderShell(app, { onSignOut: handleSignOut });
     shellMounted = true;

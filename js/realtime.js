@@ -16,7 +16,7 @@
  */
 import { supabase } from './supabase.js';
 import { setState } from './state.js';
-import { loadPrism, loadSyncStatus } from './data/prism.js';
+import { loadPrism, loadSyncStatus, loadSyncIssues } from './data/prism.js';
 
 const TABLES = [
   'prism_job_book_entries',
@@ -33,8 +33,10 @@ function scheduleReload() {
   clearTimeout(pending);
   pending = setTimeout(async () => {
     try {
-      const [prism, syncStatus] = await Promise.all([loadPrism(), loadSyncStatus()]);
-      setState({ prism, syncStatus });
+      const [prism, syncStatus, syncIssues] = await Promise.all([
+        loadPrism(), loadSyncStatus(), loadSyncIssues(),
+      ]);
+      setState({ prism, syncStatus, syncIssues });
     } catch (error) {
       console.error('Reload after realtime change failed:', error);
     }

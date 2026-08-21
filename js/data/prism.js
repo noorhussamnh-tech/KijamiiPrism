@@ -73,6 +73,22 @@ export async function loadSyncStatus() {
   return data?.[0] ?? null;
 }
 
+/**
+ * Everything the loader could not take at face value, from the most recent
+ * run. These are the values left null rather than guessed at, and Evidence
+ * Exceptions exists to make them visible instead of letting them disappear.
+ */
+export async function loadSyncIssues() {
+  const { data, error } = await supabase
+    .from('prism_sync_issues')
+    .select('run_id, tab, source_row, severity, code, column_name, raw_value, message')
+    .order('run_id', { ascending: false })
+    .limit(2000);
+  if (error) return [];
+  const latest = data?.[0]?.run_id;
+  return (data ?? []).filter((i) => i.run_id === latest);
+}
+
 // ------------------------------------------------------------------ helpers
 
 export const MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];

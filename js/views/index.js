@@ -11,6 +11,10 @@ import { renderKnowledgeCenter } from './knowledge-center.js';
 import { renderBoardroom } from './boardroom.js';
 import { renderAccessControl } from './access-control.js';
 import { renderHoursPerEmployee } from './hours-per-employee.js';
+import { renderHoursCoverage } from './hours-coverage.js';
+import { renderEvidenceExceptions } from './evidence-exceptions.js';
+import { renderRevenueConcentration } from './revenue-concentration.js';
+import { renderRegionalActuals } from './regional-actuals.js';
 
 const REGISTRY = {
   about: renderAbout,
@@ -18,6 +22,10 @@ const REGISTRY = {
   boardroom: renderBoardroom,
   'access-control': renderAccessControl,
   'hours-per-employee': renderHoursPerEmployee,
+  'hours-coverage': renderHoursCoverage,
+  'evidence-exceptions': renderEvidenceExceptions,
+  'revenue-concentration': renderRevenueConcentration,
+  'regional-actuals': renderRegionalActuals,
 };
 
 /** Shared across renders so a segmented control keeps its choice on repaint. */

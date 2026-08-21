@@ -16,6 +16,7 @@ const state = {
   // views can tell "not yet fetched" from "fetched and empty".
   prism: null,
   syncStatus: null,
+  syncIssues: [],
   loading: true,
 };
 
@@ -77,6 +78,7 @@ export function clearData() {
     team: [],
     prism: null,
     syncStatus: null,
+    syncIssues: [],
     loading: false,
   });
   notify();
