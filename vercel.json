@@ -1,11 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": null,
   "outputDirectory": ".",
   "cleanUrls": false,
   "headers": [
     {
-      "//": "The app ships unbundled ES modules at stable URLs, so a browser that caches views/index.js keeps running an old build after a deploy — and a version query on the entry point cannot reach modules it imports by fixed path. Revalidation is the fix: these files are tiny and a 304 costs almost nothing.",
       "source": "/js/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
@@ -24,7 +22,6 @@
       ]
     },
     {
-      "//": "The page embeds nothing and talks only to Supabase and the two Google Fonts hosts, so it can afford a tight policy.",
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
