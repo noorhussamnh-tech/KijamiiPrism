@@ -8,7 +8,7 @@
  *
  * Coverage here is measured against employees who submitted *at some point* in
  * the window. Measuring against headcount would be a different, larger number,
- * and the workbook does not carry headcount.
+ * and the record does not carry headcount.
  */
 import { el, clear } from '../ui/dom.js';
 import { pageHeader, panel, kpiRow, twoUp, tag, sourceLink, toolbar, filterBar } from '../ui/page.js';
@@ -113,7 +113,7 @@ export function renderHoursCoverage(root, view) {
         })),
         format: () => '✓',
       }),
-      footnote: 'Source · Egypt & UAE Time Dedication. A tick means a timesheet exists, whatever it records.',
+      footnote: 'Source · Calderra & Solvina time dedication. A tick means a timesheet exists, whatever it records.',
     }),
 
     twoUp(

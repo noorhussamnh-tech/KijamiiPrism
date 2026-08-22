@@ -1,24 +1,31 @@
 /**
- * The one and only Supabase client.
+ * No client. Deliberately.
  *
- * This is the single module that imports from the CDN — everything else
- * imports `supabase` from here. Changing CDN or pinning a new version is
- * therefore a one-line edit.
+ * In production this module creates the Supabase client and everything else
+ * imports it from here. On the demonstration branch there is nothing to
+ * create: the SDK is not fetched from the CDN, no project URL or key exists in
+ * the source, and no object in this build is capable of making a request to a
+ * database.
  *
- * The version is pinned deliberately. An unpinned `@2` lets a CDN release
- * change behaviour on a page reload with no commit on our side.
+ * The module is kept rather than deleted so that any import left over from a
+ * merge fails loudly at the call site instead of silently resolving to
+ * undefined and looking, for a moment, like it worked.
  */
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/+esm';
-import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from './config.js';
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    flowType: 'pkce',
-    // Email confirmation links come back as `?code=...` on the query string.
-    // This must stay on for them to establish a session. It does not collide
-    // with our hash-based router, which only reads `location.hash`.
-    detectSessionInUrl: true,
+const REFUSAL =
+  'Kijamii Prism (demo): there is no database client in this build. ' +
+  'All figures come from js/demo/dataset.js.';
+
+/**
+ * A proxy that throws on any property access. `supabase.from(...)`,
+ * `supabase.auth`, `supabase.channel(...)` — all of them stop here.
+ */
+export const supabase = new Proxy(
+  {},
+  {
+    get(_target, property) {
+      if (property === Symbol.toStringTag) return 'DisabledSupabaseClient';
+      throw new Error(`${REFUSAL} (attempted: supabase.${String(property)})`);
+    },
   },
-});
+);

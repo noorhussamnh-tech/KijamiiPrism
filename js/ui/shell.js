@@ -1,13 +1,20 @@
 /**
- * The signed-in chrome: grouped sidebar, top bar, and the outlet views render
- * into. Built once per sign-in; route changes repaint only the outlet and
- * restyle the nav, so the sidebar never flickers.
+ * The chrome: the demonstration banner, a grouped sidebar, a top bar, and the
+ * outlet views render into. Built once, then route changes repaint only the
+ * outlet and restyle the nav, so the sidebar never flickers.
+ *
+ * Two differences from production, both required by this build:
+ *
+ *  - the banner above everything, which cannot be dismissed and is not
+ *    suppressed by boardroom mode, so a screenshot taken from any page carries
+ *    the label with it; and
+ *  - no sign-out control, because there is no session to end.
  */
 import { el, clear } from './dom.js';
-import { getState, isAdmin } from '../state.js';
+import { getState } from '../state.js';
 import { currentRoute, navigate } from '../router.js';
 import { GROUPS, viewsInGroup, getView, groupLabel } from '../nav.js';
-import { SOURCE_WORKBOOK_URL, APP_VERSION } from '../config.js';
+import { SOURCE_WORKBOOK_URL, APP_VERSION, DEMO_LABEL } from '../config.js';
 import { sourceLink } from './page.js';
 
 let outlet = null;
@@ -19,12 +26,29 @@ export function getOutlet() {
   return outlet;
 }
 
+/**
+ * The required label. Exported so the splash carries it too — the seconds
+ * before the dataset resolves are still a screen someone can screenshot.
+ */
+export function demoBanner() {
+  return el('div', { class: 'demobar', role: 'note' }, [
+    el('span', { class: 'demobar__dot', 'aria-hidden': 'true' }),
+    el('span', { class: 'demobar__text', text: DEMO_LABEL }),
+    el('span', {
+      class: 'demobar__sub',
+      text: 'Fictional clients, employees and figures · read-only · not connected to any live system',
+    }),
+  ]);
+}
+
 export function setRealtimeStatus(status) {
   if (!statusEl) return;
-  const live = status === 'SUBSCRIBED';
-  statusEl.className = `livestat ${live ? 'livestat--on' : 'livestat--off'}`;
-  statusEl.title = live ? 'Subscribed to database changes' : `Realtime: ${status}`;
-  statusEl.querySelector('.livestat__text').textContent = live ? 'Live · Supabase' : 'Offline';
+  statusEl.className = 'livestat livestat--demo';
+  statusEl.title =
+    status === 'DEMO'
+      ? 'Fixed dataset bundled with the page. No database connection is opened.'
+      : `Status: ${status}`;
+  statusEl.querySelector('.livestat__text').textContent = 'Static · demo dataset';
 }
 
 /** Highlight the active nav entry and update the breadcrumb. */
@@ -51,7 +75,7 @@ function toggleBoardroom() {
   document.documentElement.dataset.boardroom = on ? 'false' : 'true';
 }
 
-function sidebar({ onSignOut }) {
+function sidebar() {
   const { profile } = getState();
   navButtons = new Map();
 
@@ -77,8 +101,7 @@ function sidebar({ onSignOut }) {
     ]);
   }).filter(Boolean);
 
-  const displayName = profile?.full_name || profile?.email || 'Signed in';
-  const initial = (displayName[0] ?? '?').toUpperCase();
+  const displayName = profile?.full_name ?? 'Demo Viewer';
 
   return el('aside', { class: 'sidebar' }, [
     el('div', { class: 'brand' }, [
@@ -96,30 +119,23 @@ function sidebar({ onSignOut }) {
 
     el('div', { class: 'sidebar__foot' }, [
       el('div', { class: 'who' }, [
-        el('span', { class: 'who__avatar', text: initial, 'aria-hidden': 'true' }),
+        el('span', { class: 'who__avatar', text: 'D', 'aria-hidden': 'true' }),
         el('div', { class: 'who__text' }, [
           el('p', { class: 'who__name', text: displayName }),
-          el('p', {
-            class: 'who__role',
-            text: isAdmin() ? 'Kijamii Leader' : 'Kijamii Team',
-          }),
+          el('p', { class: 'who__role', text: 'Read-only' }),
         ]),
       ]),
-      el('button', {
-        class: 'signout',
-        type: 'button',
-        text: 'SIGN OUT',
-        onClick: onSignOut,
-      }),
+      // No sign-out control: there is no session in this build to end.
+      el('p', { class: 'sidebar__note', text: 'Anonymized demonstration data' }),
     ]),
   ]);
 }
 
 function topbar() {
   crumbEl = el('div', { class: 'crumb' });
-  statusEl = el('div', { class: 'livestat livestat--off' }, [
+  statusEl = el('div', { class: 'livestat livestat--demo' }, [
     el('span', { class: 'livestat__dot', 'aria-hidden': 'true' }),
-    el('span', { class: 'livestat__text', text: 'Offline' }),
+    el('span', { class: 'livestat__text', text: 'Static · demo dataset' }),
   ]);
 
   return el('header', { class: 'topbar' }, [
@@ -138,13 +154,14 @@ function topbar() {
   ]);
 }
 
-export function renderShell(root, { onSignOut }) {
+export function renderShell(root) {
   clear(root);
   outlet = el('main', { class: 'outlet', id: 'view' });
 
   root.append(
+    demoBanner(),
     el('div', { class: 'shell' }, [
-      sidebar({ onSignOut }),
+      sidebar(),
       el('div', { class: 'stage' }, [topbar(), outlet]),
     ])
   );

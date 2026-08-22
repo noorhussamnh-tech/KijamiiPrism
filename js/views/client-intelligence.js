@@ -149,7 +149,7 @@ export function renderClientIntelligence(root, view) {
         ]),
       ]),
       footnote:
-        '"not measured" means no timesheet exists for that client — chiefly KSA, which files none. It is not zero effort.',
+        '"not measured" means no timesheet exists for that client — chiefly Marovia, which files none. It is not zero effort.',
     }),
   );
 }

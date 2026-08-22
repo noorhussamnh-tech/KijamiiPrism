@@ -3,12 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kijamii Prism — Intelligence Layer</title>
+    <title>Kijamii Prism — Demonstration Environment</title>
     <meta
       name="description"
-      content="The reading layer over Kijamii's revenue, effort and scope records."
+      content="Demonstration environment for Kijamii Prism. Anonymized data: every client, employee and figure is fictional."
     />
     <meta name="color-scheme" content="dark" />
+
+    <!-- Not a private page, but not one that belongs in a search index either:
+         it is a fixed sample, and a stale demo ranking above the real thing
+         helps nobody. Reinforced by X-Robots-Tag in vercel.json. -->
+    <meta name="robots" content="noindex, nofollow" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,14 +33,15 @@
     />
   </head>
   <body>
-    <!-- Everything below is rendered by js/main.js. The only markup here is the
-         mount point and a no-JS message, so there is never a moment where the
-         page shows dashboard chrome without a verified session. -->
+    <!-- Everything below is rendered by js/main.js, starting with the
+         demonstration banner. The only markup here is the mount point and a
+         no-JS message. -->
     <div id="app"></div>
 
     <noscript>
       <p style="padding: 2rem; font-family: system-ui; color: #f4f4f5">
-        Kijamii Prism needs JavaScript enabled.
+        Kijamii Prism needs JavaScript enabled. This is the demonstration
+        environment — all data shown is anonymized and fictional.
       </p>
     </noscript>
 

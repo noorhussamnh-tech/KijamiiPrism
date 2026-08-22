@@ -153,7 +153,7 @@ export function renderWorkloadPressure(root, view) {
           })),
           format: fmt.hours,
         }),
-        footnote: 'Source · Egypt & UAE Time Dedication.',
+        footnote: 'Source · Calderra & Solvina time dedication.',
       }),
     ),
   );

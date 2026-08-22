@@ -57,12 +57,69 @@ a {
   border-radius: var(--r-sm);
 }
 
+/* --------------------------------------------------------- demo banner */
+
+/**
+ * The required label.
+ *
+ * Sticky rather than fixed, so it participates in layout and the sidebar and
+ * top bar can offset against it instead of being overlapped by it. It sits
+ * above both in the stacking order, it is present on the splash as well as the
+ * app, and boardroom mode does not hide it — a screenshot from any page, in any
+ * state, carries the label.
+ */
+.demobar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  height: var(--demobar-h);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-5);
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.demobar__dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent-ink);
+}
+
+.demobar__text {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.demobar__sub {
+  font-family: var(--font-body);
+  font-size: var(--fs-2xs);
+  opacity: 0.72;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .demobar__sub {
+    display: none;
+  }
+}
+
 /* ------------------------------------------------------------------ shell */
 
 .shell {
   display: grid;
   grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
-  min-height: 100vh;
+  min-height: calc(100vh - var(--demobar-h));
 }
 
 .stage {
@@ -73,9 +130,10 @@ a {
 
 .sidebar {
   position: sticky;
-  top: 0;
+  /* Offset by the banner so it docks under it rather than behind it. */
+  top: var(--demobar-h);
   align-self: start;
-  height: 100vh;
+  height: calc(100vh - var(--demobar-h));
   display: flex;
   flex-direction: column;
   gap: var(--sp-5);
@@ -254,27 +312,19 @@ a {
   color: var(--text-ghost);
 }
 
-.signout {
-  border: 0;
-  background: none;
-  padding: 0;
-  text-align: left;
+/* Replaces the sign-out control, which this build has no session to offer. */
+.sidebar__note {
   font-family: var(--font-mono);
   font-size: var(--fs-2xs);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   color: var(--text-ghost);
-  cursor: pointer;
-}
-
-.signout:hover {
-  color: var(--danger);
 }
 
 /* ----------------------------------------------------------------- topbar */
 
 .topbar {
   position: sticky;
-  top: 0;
+  top: var(--demobar-h);
   z-index: 20;
   height: var(--topbar-h);
   flex: none;
@@ -367,6 +417,11 @@ a {
   color: var(--s3);
 }
 
+/* No socket in this build — amber, not green, so it never reads as "live". */
+.livestat--demo {
+  color: var(--note);
+}
+
 /* ----------------------------------------------------------------- outlet */
 
 .outlet {
@@ -383,7 +438,7 @@ a {
 /* ----------------------------------------------------------------- splash */
 
 .splash {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--demobar-h));
   display: grid;
   place-content: center;
   justify-items: center;

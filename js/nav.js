@@ -54,9 +54,9 @@ export const VIEWS = [
     label: 'Regional Actuals',
     title: 'Regional Actuals',
     question: 'What did each region actually record?',
-    headline: 'Egypt and UAE side by side on recorded revenue and recorded effort',
+    headline: 'Calderra and Solvina side by side on recorded revenue and recorded effort',
     caveat:
-      'Regional figures convert to a single currency at the rate stated in the workbook; conversion is applied once, at read time.',
+      'Regional figures convert to a single currency at the rate stated on the row; conversion is applied once, at read time.',
     needs: ['Job book · region, revenue, currency', 'Time dedication · region, hours'],
   },
   {

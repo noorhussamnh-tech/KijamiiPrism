@@ -185,7 +185,7 @@ export function renderCommercialDirection(root, view) {
           })),
           keys, format: (v) => fmt.money(v),
         }),
-        footnote: 'Source · Collective Job Books, converted at each row’s date.',
+        footnote: 'Source · job book, converted at each row’s date.',
       }),
     );
   }

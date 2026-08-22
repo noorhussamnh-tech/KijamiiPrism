@@ -39,21 +39,16 @@ export function segmented(options, active, onPick) {
   );
 }
 
-/** The "SOURCE WORKBOOK ↗" pill. Href is configured, never guessed. */
-export function sourceLink(href) {
-  if (!href) {
-    return el('span', {
-      class: 'srcpill srcpill--unset',
-      title: 'Set the workbook URL in js/config.js',
-      text: '● SOURCE NOT LINKED',
-    });
-  }
-  return el('a', {
-    class: 'srcpill',
-    href,
-    target: '_blank',
-    rel: 'noopener noreferrer',
-    text: '● SOURCE WORKBOOK ↗',
+/**
+ * The source pill. In production this links to the workbook every figure
+ * traces back to. In the demonstration build there is no workbook and no link
+ * to give — the pill stays, and says what is actually behind the numbers.
+ */
+export function sourceLink() {
+  return el('span', {
+    class: 'srcpill srcpill--unset',
+    title: 'Fixed anonymized dataset bundled with the page. No external source.',
+    text: '● SOURCE · SYNTHETIC DATASET',
   });
 }
 
@@ -169,7 +164,7 @@ export function awaitingData(view) {
     el('h2', { class: 'awaiting__title', text: 'Not wired up yet' }),
     el('p', {
       class: 'awaiting__body',
-      text: 'The workbook is synced and these columns are already in the database — this view has not been connected to them yet. It reads:',
+      text: 'This view has not been connected to its source columns yet. It reads:',
     }),
     el(
       'ul',
@@ -183,14 +178,14 @@ export function awaitingData(view) {
   ]);
 }
 
-/** Sync freshness, for the footer of a live view. */
+/** Dataset provenance, for the footer of a data-backed view. */
 export function syncFootnote(status) {
   if (!status) return null;
   const when = status.last_run_finished ?? status.last_run_started;
   const stamp = when ? new Date(when).toLocaleString('en-GB') : 'unknown';
   const issues = Number(status.issue_count ?? 0);
   return el('p', { class: 'panel__footnote' }, [
-    `Last synced ${stamp} · ${status.status}`,
+    `Demonstration dataset · generated ${stamp}`,
     issues ? ` · ${issues} value${issues === 1 ? '' : 's'} quarantined rather than guessed` : '',
   ]);
 }

@@ -1,13 +1,13 @@
 /**
  * Regional Actuals.
  *
- * Egypt, UAE, KSA and Non-UAE side by side on recorded revenue and recorded
- * effort.
+ * Calderra, Solvina, Marovia and Non-Solvina side by side on recorded revenue
+ * and recorded effort.
  *
  * One asymmetry runs through this page and is stated rather than hidden: the
- * timesheet workbook covers Egypt and UAE only. KSA is the largest region by
- * revenue and files no timesheets at all, so its effort column is not zero —
- * it is unmeasured. Every effort figure here is labelled accordingly.
+ * timesheet record covers Calderra and Solvina only. Marovia is the largest
+ * region by revenue and files no timesheets at all, so its effort column is not
+ * zero — it is unmeasured. Every effort figure here is labelled accordingly.
  */
 import { el, clear } from '../ui/dom.js';
 import { pageHeader, panel, kpiRow, twoUp, tag, sourceLink, toolbar, filterBar } from '../ui/page.js';
@@ -16,9 +16,9 @@ import { getState } from '../state.js';
 import { SOURCE_WORKBOOK_URL } from '../config.js';
 import { monthLabel, monthsIn, nameLookup } from '../data/prism.js';
 
-// Regions the timesheet workbook actually covers. Anything else has revenue
+// Regions the timesheet record actually covers. Anything else has revenue
 // but no measurable effort, which is a different statement from "no effort".
-const TIMESHEET_REGIONS = new Set(['Egypt', 'UAE']);
+const TIMESHEET_REGIONS = new Set(['Calderra', 'Solvina']);
 
 let filters = { from: 'all', to: 'all' };
 
@@ -107,7 +107,7 @@ export function renderRegionalActuals(root, view) {
       { label: 'Effort placed by region', value: fmt.hours(measurableHours),
         meta: unplacedHours
           ? `${fmt.hours(unplacedHours)} more recorded against clients with no region on file`
-          : 'Egypt and UAE only' },
+          : 'Calderra and Solvina only' },
       { label: 'Revenue without effort data', value: fmt.money(unmeasuredRev),
         meta: 'Regions filing no timesheets', tone: unmeasuredRev ? 'note' : undefined },
       { label: 'Regions', value: String(regionCodes.length), meta: 'Present in the job book' },
@@ -130,7 +130,7 @@ export function renderRegionalActuals(root, view) {
       panel({
         eyebrow: 'Effort',
         title: 'Recorded hours by region',
-        aside: tag('EGYPT & UAE ONLY', 'note'),
+        aside: tag('CALDERRA & SOLVINA ONLY', 'note'),
         body: el('ul', { class: 'rank' },
           summary.map((r, i) =>
             el('li', { class: 'rank__row' }, [
@@ -148,7 +148,7 @@ export function renderRegionalActuals(root, view) {
               ]),
             ]))),
         footnote:
-          'KSA and Non-UAE file no timesheets. Their effort is unmeasured, which is not the same as zero — no revenue-per-hour figure is offered for them.',
+          'Marovia and Non-Solvina file no timesheets. Their effort is unmeasured, which is not the same as zero — no revenue-per-hour figure is offered for them.',
       }),
     ),
   );
@@ -175,7 +175,7 @@ export function renderRegionalActuals(root, view) {
           el('span', { class: 'legend__label', text: k }),
         ]))),
       body: stackedMonths({ months: monthly, keys, format: (v) => fmt.money(v) }),
-      footnote: 'Source · Collective Job Books. Region is taken from the job-book row, not inferred from the client.',
+      footnote: 'Source · job book. Region is taken from the job-book row, not inferred from the client.',
     }),
   );
 }

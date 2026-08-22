@@ -1,76 +1,56 @@
 /**
- * Data access for the Prism pipeline tables.
+ * Data access — demonstration build.
  *
- * Everything is fetched once at sign-in and aggregated in the browser. The
- * whole record is about a thousand rows — smaller than a single photo — so
- * round-tripping to the server for each filter change would add latency
- * without buying anything.
+ * In production these three functions issue SELECTs against the Prism pipeline
+ * tables. Here they resolve a fixed, generated dataset that ships with the
+ * page. Nothing else changed: the shape they return is identical, and every
+ * helper below the loaders — pivot, monthsIn, nameLookup, monthLabel, the
+ * reference threshold — is the production code untouched, so every figure in
+ * the app is computed by exactly the same arithmetic as it is in production.
  *
- * These tables are read-only to the client by policy: `authenticated` holds
- * SELECT and nothing else. There is no write path here because there is no
- * write path at all.
+ * The functions stay `async`. Making them synchronous would work, but it would
+ * change the call sites in main.js and realtime.js, and the point of this build
+ * is that the surrounding code is the production code.
  */
-import { supabase } from '../supabase.js';
+import {
+  CLIENTS,
+  EMPLOYEES,
+  REGIONS,
+  SERVICES,
+  CONTRACTS,
+  SCOPE_LINES,
+  TIME_DEDICATION,
+  JOB_BOOK,
+  SYNC_STATUS,
+  SYNC_ISSUES,
+} from '../demo/dataset.js';
 
-/** Rows arrive newest-column-first; PostgREST caps at 1000 unless told otherwise. */
-const PAGE = 2000;
-
-async function all(table, columns, order) {
-  let q = supabase.from(table).select(columns).limit(PAGE);
-  if (order) q = q.order(order);
-  const { data, error } = await q;
-  if (error) throw new Error(`${table}: ${error.message}`);
-  return data ?? [];
-}
+/**
+ * The dataset is frozen on the way out. Views should not be able to mutate the
+ * record they are reading, and in a build with no server to refetch from, a
+ * stray write would persist for the whole session with nothing to correct it.
+ */
+const frozen = (rows) => Object.freeze(rows.map((r) => Object.freeze({ ...r })));
 
 export async function loadPrism() {
-  const [
-    clients, employees, regions, services,
-    timeDedication, jobBook, scopeLines, contracts,
-  ] = await Promise.all([
-    all('prism_clients', 'client_code, name, sector', 'name'),
-    all('prism_employees', 'employee_code, name, is_placeholder', 'name'),
-    all('prism_regions', 'region_code, name', 'region_code'),
-    all('prism_services', 'service_code, name', 'service_code'),
-    all(
-      'prism_time_dedication',
-      'source_row, month_start, employee_code, client_code, hours, team, title, engagement_type, is_deleted',
-      'month_start',
-    ),
-    all(
-      'prism_job_book_entries',
-      'source_row, client_code, region_code, entry_type, month_start, service_code, sub_service, ' +
-        'currency, recognized_amount, recognized_amount_usd, fx_rate_used, invoicing_date, is_deleted',
-      'month_start',
-    ),
-    all(
-      'prism_scope_lines',
-      'client_code, employee_code, function, title, assignee_name, assumed_pct, assumed_hours, is_deleted',
-      'client_code',
-    ),
-    all('prism_contracts', 'client_code, end_date, end_date_unknown', 'client_code'),
-  ]);
-
-  // Soft-deleted rows are still in the table by design — they are history, not
+  // Soft-deleted rows are still in the record by design — they are history, not
   // current record. Every view reads the live set.
   const live = (rows) => rows.filter((r) => !r.is_deleted);
 
   return {
-    clients,
-    employees,
-    regions,
-    services,
-    timeDedication: live(timeDedication),
-    jobBook: live(jobBook),
-    scopeLines: live(scopeLines),
-    contracts,
+    clients: frozen(CLIENTS),
+    employees: frozen(EMPLOYEES),
+    regions: frozen(REGIONS),
+    services: frozen(SERVICES),
+    timeDedication: frozen(live(TIME_DEDICATION)),
+    jobBook: frozen(live(JOB_BOOK)),
+    scopeLines: frozen(live(SCOPE_LINES)),
+    contracts: frozen(CONTRACTS),
   };
 }
 
 export async function loadSyncStatus() {
-  const { data, error } = await supabase.from('prism_sync_status_v').select('*').limit(1);
-  if (error) return null;
-  return data?.[0] ?? null;
+  return Object.freeze({ ...SYNC_STATUS });
 }
 
 /**
@@ -79,14 +59,7 @@ export async function loadSyncStatus() {
  * Exceptions exists to make them visible instead of letting them disappear.
  */
 export async function loadSyncIssues() {
-  const { data, error } = await supabase
-    .from('prism_sync_issues')
-    .select('run_id, tab, source_row, severity, code, column_name, raw_value, message')
-    .order('run_id', { ascending: false })
-    .limit(2000);
-  if (error) return [];
-  const latest = data?.[0]?.run_id;
-  return (data ?? []).filter((i) => i.run_id === latest);
+  return frozen(SYNC_ISSUES);
 }
 
 // ------------------------------------------------------------------ helpers

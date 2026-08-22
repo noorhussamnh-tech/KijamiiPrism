@@ -1,11 +1,10 @@
 /**
  * Scope vs. Effort.
  *
- * Covers only the clients with a documented breakdown in the Scopes tab —
- * currently MYF, KFH and Valmore. Every other active client is listed as
- * unscoped rather than shown at zero scope, because "we never wrote the scope
- * down" and "we agreed to do nothing" are different statements and only one of
- * them is true.
+ * Covers only the clients with a documented breakdown in the scope document.
+ * Every other active client is listed as unscoped rather than shown at zero
+ * scope, because "we never wrote the scope down" and "we agreed to do nothing"
+ * are different statements and only one of them is true.
  *
  * Assumed hours are monthly, on a 140-hour basis: assumed_pct x 140.
  */
@@ -48,8 +47,8 @@ export function renderScopeVsEffort(root, view) {
   }
 
   // A scope row recording zero dedication documents no expectation, so it
-  // cannot be compared against. Yango Play is the case in point: it appears in
-  // the Scopes tab with 0. Counting it as scoped here while Actual vs. Assumed
+  // cannot be compared against. The dataset carries one such client, because
+  // the case is real. Counting it as scoped here while Actual vs. Assumed
   // excludes it would put two different numbers on the same idea.
   const scopedCodes = [...assumedByClient.keys()].filter((c) => assumedByClient.get(c) > 0);
   const zeroScoped = [...assumedByClient.keys()].filter((c) => !(assumedByClient.get(c) > 0));
@@ -193,9 +192,9 @@ export function renderScopeVsEffort(root, view) {
               ])))
         : el('p', { class: 'empty', text: 'Every active client has a scope on file.' }),
       footnote:
-        'The Scopes tab notes that Castrol, Baskin Robbins and ShoeMart have no resource breakdown yet. These are unscoped, not zero-scope, and are excluded from every figure above.'
+        'These clients have no resource breakdown on file yet. They are unscoped, not zero-scope, and are excluded from every figure above.'
         + (zeroActive.length
-          ? ` ${zeroActive.map(clientName).join(', ')} ${zeroActive.length === 1 ? 'appears' : 'appear'} in the Scopes tab with zero dedication recorded, which documents no expectation to compare against — also excluded.`
+          ? ` ${zeroActive.map(clientName).join(', ')} ${zeroActive.length === 1 ? 'appears' : 'appear'} in the scope document with zero dedication recorded, which documents no expectation to compare against — also excluded.`
           : ''),
     }),
   );

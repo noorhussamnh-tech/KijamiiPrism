@@ -101,11 +101,17 @@
   --sidebar-w: 256px;
   --topbar-h: 57px;
   --content-max: 1180px;
+
+  /* Height of the demonstration banner. The sidebar, top bar and splash all
+     offset against it, so it is a token rather than a repeated magic number. */
+  --demobar-h: 32px;
 }
 
 /* Boardroom mode: same palette, larger type, controls hidden. Sized to be
    legible from across a room rather than from a desk. */
 :root[data-boardroom='true'] {
+  /* The banner grows with the ramp — it must stay legible from the room too. */
+  --demobar-h: 40px;
   --fs-2xs: 0.8125rem;
   --fs-xs: 0.875rem;
   --fs-sm: 1rem;

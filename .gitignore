@@ -1,5 +1,5 @@
 # Local Claude Code settings (machine-specific, not shared)
-.claude/settings.local.json
+.claude/
 
 # macOS
 .DS_Store

@@ -12,7 +12,7 @@
  *    consequential error these views could make.
  *
  * All of them take data as arguments and hold no opinion about where it came
- * from, so they are ready before the source workbook is.
+ * from, so they are ready before the record is.
  */
 import { el } from './dom.js';
 

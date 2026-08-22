@@ -178,7 +178,7 @@ export function renderProjectsTicketSize(root, view) {
         })),
         format: (v) => fmt.money(v),
       }),
-      footnote: 'Source · Collective Job Books. Costs and non-convertible rows are excluded.',
+      footnote: 'Source · job book. Costs and non-convertible rows are excluded.',
     }),
   );
 }

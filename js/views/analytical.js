@@ -9,8 +9,11 @@
  * own.
  *
  * The figures render with their labels and an em dash for the value until the
- * source workbook is loaded. That is intentional: the page shows exactly what
+ * source columns are wired up. That is intentional: the page shows exactly what
  * it will say, without inventing what it will say it about.
+ *
+ * Every view in this build is registered in views/index.js, so nothing routes
+ * here today. It is kept as the fallback it was written to be.
  */
 import { el, clear } from '../ui/dom.js';
 import {
@@ -31,7 +34,7 @@ const monthOpts = opts(MONTHS);
 
 /** Filters shared by nearly every operational view. */
 const BASE = [
-  { name: 'region', label: 'Region', value: 'All regions', options: opts(['All regions', 'Egypt', 'UAE']) },
+  { name: 'region', label: 'Region', value: 'All regions', options: opts(['All regions', 'Calderra', 'Solvina']) },
   { name: 'client', label: 'Client', value: 'All clients', options: opts(['All clients']) },
   { name: 'from', label: 'From', value: 'Jan', options: monthOpts },
   { name: 'to', label: 'To', value: 'Aug', options: monthOpts },
@@ -78,10 +81,10 @@ const SPEC = {
   'regional-actuals': {
     filters: withCurrency,
     kpis: [
-      { label: 'Egypt revenue', meta: 'Converted at the workbook rate' },
-      { label: 'UAE revenue', meta: 'Converted at the workbook rate' },
-      { label: 'Egypt hours', meta: 'Recorded, not capacity' },
-      { label: 'UAE hours', meta: 'Recorded, not capacity' },
+      { label: 'Calderra revenue', meta: 'Converted at the recorded rate' },
+      { label: 'Solvina revenue', meta: 'Converted at the recorded rate' },
+      { label: 'Calderra hours', meta: 'Recorded, not capacity' },
+      { label: 'Solvina hours', meta: 'Recorded, not capacity' },
     ],
   },
   'projects-ticket-size': {

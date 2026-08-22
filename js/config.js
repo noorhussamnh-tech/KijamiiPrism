@@ -1,23 +1,26 @@
 /**
- * Supabase connection details and app-level constants.
+ * App-level constants for the demonstration build.
  *
- * The publishable key is designed to ship in client-side code — it identifies
- * the project, it does not authorise anything. Every access decision is made
- * by the Row Level Security policies in supabase/migrations/. Never put a
- * secret or service-role key in this file; it is served to every visitor.
+ * The production configuration is deliberately absent. There is no Supabase
+ * URL, no publishable key and no administrator address in this file, because
+ * this branch has no backend to point them at — every figure is read from
+ * js/demo/dataset.js, in the browser, offline.
+ *
+ * If you are adding something here, note what is *not* here: a credential of
+ * any kind, in any form, does not belong on this branch. The demo is public.
  */
-export const SUPABASE_URL = 'https://gwepxpyfgtgagceguyhm.supabase.co';
-export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_WR2wLuKqw6C5Q3uqS8X5UA_z4FeINNy';
 
-/** Mirrors public.admin_email() in the database. Display only — the database decides. */
-export const ADMIN_EMAIL = 'noorhussam.nh@gmail.com';
+/** Read by main.js, shell.js and page.js to render the demonstration chrome. */
+export const DEMO_MODE = true;
 
-export const APP_VERSION = 'v2.4';
+/** The label required on every screen. Rendered by ui/shell.js. */
+export const DEMO_LABEL = 'Demonstration Environment — Anonymized Data';
+
+export const APP_VERSION = 'v2.4 · demo';
 
 /**
- * The workbook every figure traces back to. Set this to the Google Sheet URL
- * and the "SOURCE WORKBOOK ↗" pills throughout the app become live links.
- * Left null deliberately rather than pointed at a guess — a source link that
- * goes to the wrong document is worse than one that admits it is unset.
+ * There is no source workbook on this branch, and there will not be one — the
+ * pill exists so the interface grammar stays intact, and it says exactly what
+ * the figures behind it are.
  */
 export const SOURCE_WORKBOOK_URL = null;

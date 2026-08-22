@@ -5,8 +5,8 @@
  * across the window, because a client that runs 40 hours over in March and 40
  * under in April is not "on scope" — it is volatile, and averaging hides that.
  *
- * Limited to the three clients with a documented breakdown. A positive bar is
- * a prompt to check whether the scope is current, not proof of an overrun.
+ * Limited to the clients with a documented breakdown. A positive bar is a
+ * prompt to check whether the scope is current, not proof of an overrun.
  */
 import { el, clear } from '../ui/dom.js';
 import { pageHeader, panel, kpiRow, tag, sourceLink, toolbar, segmented } from '../ui/page.js';

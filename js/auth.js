@@ -1,103 +1,54 @@
 /**
- * Authentication. Wraps supabase.auth so views never touch it directly.
+ * Session — demonstration build.
  *
- * Note on roles: nothing here grants anything. `loadProfile` reads the role the
- * database assigned, and the UI uses it to decide what to *show*. Whether an
- * action succeeds is decided by RLS, server-side, every time.
+ * There is no authentication here, and that is not a shortcut. A sign-in form
+ * over a public dataset is theatre: it implies a boundary that does not exist,
+ * and it invites someone to type a real password into a demo. So the build has
+ * no credential surface at all — no form, no session token, no email address,
+ * nothing to phish and nothing to leak.
+ *
+ * The functions production calls are still exported with the same signatures,
+ * so main.js is the production file. The four that changed state in production
+ * — signIn, signUp, setRole, setApproval — are gone rather than stubbed,
+ * because a no-op write is a button that lies about what it did.
  */
-import { supabase } from './supabase.js';
+import { ACCOUNTS } from './demo/dataset.js';
+
+/**
+ * A fixed viewer. Not a signed-in user: a label for the chrome that expects
+ * one. `role: 'member'` deliberately — the demo shows the read view, which is
+ * what an administrator sees too, minus controls that no longer exist.
+ */
+const DEMO_PROFILE = Object.freeze({
+  id: 'demo-viewer',
+  full_name: 'Demo Viewer',
+  role: 'member',
+  is_approved: true,
+  created_at: '2026-08-01T00:00:00.000Z',
+});
+
+const DEMO_SESSION = Object.freeze({
+  user: Object.freeze({ id: 'demo-viewer' }),
+  demo: true,
+});
 
 export async function getSession() {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) throw error;
-  return data.session;
-}
-
-export function onAuthStateChange(handler) {
-  const { data } = supabase.auth.onAuthStateChange((event, session) => {
-    handler(event, session);
-  });
-  return () => data.subscription.unsubscribe();
-}
-
-export async function signIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data;
-}
-
-export async function signUp(email, password, fullName) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      // handle_new_user() reads full_name out of raw_user_meta_data when it
-      // creates the profile row.
-      data: { full_name: fullName },
-      emailRedirectTo: window.location.origin + window.location.pathname,
-    },
-  });
-  if (error) throw error;
-
-  // With email confirmation on, Supabase returns a user but no session.
-  const needsConfirmation = Boolean(data.user) && !data.session;
-  return { ...data, needsConfirmation };
-}
-
-export async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-}
-
-/** The signed-in user's profile row, including the role the database gave them. */
-export async function loadProfile(userId) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id, email, full_name, role, is_approved, created_at')
-    .eq('id', userId)
-    .maybeSingle();
-  if (error) throw error;
-  return data;
+  return DEMO_SESSION;
 }
 
 /**
- * All profiles. RLS returns only the caller's own row unless they are an admin,
- * so a member calling this simply gets a one-row list rather than an error.
+ * Nothing changes the session in this build, so there is nothing to notify. The
+ * unsubscribe function is still returned so callers need no special case.
  */
+export function onAuthStateChange() {
+  return () => {};
+}
+
+export async function loadProfile() {
+  return DEMO_PROFILE;
+}
+
+/** The fictional roster Access Control displays. Carries no email column. */
 export async function loadTeam() {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id, email, full_name, role, is_approved, created_at')
-    .order('created_at');
-  if (error) throw error;
-  return data ?? [];
-}
-
-export async function setRole(userId, role) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({ role })
-    .eq('id', userId)
-    .select()
-    .single();
-  if (error) throw error;
-  return data;
-}
-
-/**
- * Approve or revoke an account's access to the record.
- *
- * A member calling this is refused by the database, not by the absence of a
- * button — the guard trigger on profiles rejects any approval change from a
- * non-admin.
- */
-export async function setApproval(userId, isApproved) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({ is_approved: isApproved })
-    .eq('id', userId)
-    .select()
-    .single();
-  if (error) throw error;
-  return data;
+  return ACCOUNTS.map((a) => ({ ...a }));
 }

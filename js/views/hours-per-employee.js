@@ -156,7 +156,7 @@ export function renderHoursPerEmployee(root, view) {
         })),
         format: (v) => String(Math.round(v)),
       }),
-      footnote: 'Source · Egypt & UAE Time Dedication, joined on Employee Code from Master Mapping.',
+      footnote: 'Source · Calderra & Solvina time dedication, joined on employee code from the master mapping.',
     }),
   );
 

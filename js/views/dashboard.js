@@ -155,7 +155,7 @@ export function renderDashboard(root, view) {
           text: `${expected - received} employee-months have no timesheet. Those are unknown effort, not zero, and every hours figure above is a floor.` }),
         el('dt', { class: 'deflist__t', text: 'Regions' }),
         el('dd', { class: 'deflist__d',
-          text: 'KSA is the largest region by revenue and files no timesheets, so it contributes revenue here but no effort.' }),
+          text: 'Marovia is the largest region by revenue and files no timesheets, so it contributes revenue here but no effort.' }),
         el('dt', { class: 'deflist__t', text: 'Scope' }),
         el('dd', { class: 'deflist__d',
           text: `${scoped.size} of ${activeClients.size} active clients have a documented scope, so scope comparisons cover a small slice of the book.` }),

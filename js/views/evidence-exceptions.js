@@ -21,7 +21,6 @@ import { nameLookup, monthLabel } from '../data/prism.js';
 
 const CODE_LABEL = {
   fx_rate_missing: 'No exchange rate on file',
-  invoice_in_date_column: 'Invoice number in a date column',
   date_unparseable: 'Value in a date column is not a date',
   date_invalid: 'Date out of range',
   month_unparseable: 'Month not recognised',
@@ -32,14 +31,12 @@ const CODE_LABEL = {
 const CODE_MEANING = {
   fx_rate_missing:
     'The amount is stored exactly as recorded, but has no USD equivalent, so it is excluded from any converted total rather than counted as zero.',
-  invoice_in_date_column:
-    'Ignored as agreed. The date field is left empty; the invoice reference is still in the workbook.',
   date_unparseable:
     'The cell holds something that is not a date. The field is empty rather than filled with a guess.',
   date_invalid: 'The day or month is out of range — most often a typo in the year.',
   month_unparseable: 'The row could not be placed in a month, so it is absent from every monthly total.',
   hours_unparseable: 'The cell was skipped entirely; it produces no effort row.',
-  contract_end_unknown: 'The workbook records "?" rather than a date. Kept as unknown, not as null.',
+  contract_end_unknown: 'The source records "?" rather than a date. Kept as unknown, not as null.',
 };
 
 export function renderEvidenceExceptions(root, view) {
@@ -124,7 +121,7 @@ export function renderEvidenceExceptions(root, view) {
           ])
         : el('p', { class: 'empty', text: 'Nothing was quarantined in the last run.' }),
       footnote: syncStatus
-        ? `From run #${syncStatus.last_run_id} · ${syncStatus.status}. Every row still loaded; only the questionable field was left empty.`
+        ? `From load #${syncStatus.last_run_id} · ${syncStatus.status}. Every row still loaded; only the questionable field was left empty.`
         : 'Every row still loaded; only the questionable field was left empty.',
     }),
   );
@@ -152,7 +149,7 @@ export function renderEvidenceExceptions(root, view) {
       listPanel('Coverage', 'Effort recorded, no revenue', effortNoRevenue,
         'These clients absorb time that no revenue row accounts for.'),
       listPanel('Coverage', 'Revenue recorded, no effort', revenueNoEffort,
-        'Revenue with no matching timesheet — expected for KSA, which files no timesheets.'),
+        'Revenue with no matching timesheet — expected for Marovia, which files none.'),
     ),
     panel({
       eyebrow: 'Scope',
