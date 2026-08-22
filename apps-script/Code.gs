@@ -251,18 +251,10 @@ function runSync(trigger) {
   var read = 0, written = 0, softDeleted = 0;
 
   try {
-    // ---- FX rates, read from the table so a correction never needs a code change
-    var rates = sb('GET', '/rest/v1/prism_fx_rates?select=currency,effective_month,rate_to_usd');
-    function rateFor(cur, month) {
-      if (!cur) return null;
-      var dated = null, standing = null;
-      for (var i = 0; i < rates.length; i++) {
-        if (rates[i].currency !== cur) continue;
-        if (rates[i].effective_month === month) dated = Number(rates[i].rate_to_usd);
-        if (rates[i].effective_month === null) standing = Number(rates[i].rate_to_usd);
-      }
-      return dated !== null ? dated : standing;
-    }
+    // Currency conversion is not this script's job. A trigger on
+    // prism_job_book_entries resolves the rate and fills the USD column on
+    // every insert and update, so the rule lives in one place and a rate
+    // correction never requires touching this file.
 
     // ---- Master Mapping
     var mm = grid(TAB_MAPPING);
@@ -307,11 +299,6 @@ function runSync(trigger) {
 
       var cur = s(r[10]);
       var rec = n(r[11]);
-      var rate = rateFor(cur, month);
-      if (rec !== null && cur && rate === null) {
-        flag(TAB_JOB_BOOK, row, 'warning', 'fx_rate_missing', 'Currency', cur,
-          'No USD rate on file for ' + cur + '; the USD figure is left empty rather than estimated.');
-      }
       var region = s(r[1]), service = s(r[4]), log = s(r[2]);
       if (region) regions[region] = 1;
       if (service) services[service] = 1;
@@ -322,9 +309,11 @@ function runSync(trigger) {
         entry_type: log === 'Revenue' ? 'revenue' : (log === 'Cost' ? 'cost' : null),
         month_start: month, service_code: service, sub_service: s(r[5]),
         description: s(r[6]), supplier: s(r[7]), doc_ref: s(r[8]),
+        // No USD figure is sent. Currency conversion is a database trigger now,
+        // so it happens in exactly one place. This script used to compute it
+        // too, and the two drifted apart the moment the rate table changed
+        // shape — which is precisely how the 22 Aug sync broke.
         invoicing_amount: n(r[9]), currency: cur, recognized_amount: rec,
-        recognized_amount_usd: (rec !== null && rate) ? Math.round((rec / rate) * 100) / 100 : null,
-        fx_rate_used: rate,
         invoicing_date: parseDate(r[12], TAB_JOB_BOOK, row, 'Invoicing Date'),
         collected_date: parseDate(r[13], TAB_JOB_BOOK, row, 'Collected?'),
         notes: s(r[14]),
