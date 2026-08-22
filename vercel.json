@@ -4,36 +4,64 @@
   "buildCommand": null,
   "outputDirectory": ".",
   "cleanUrls": false,
-
-  "//ignoreCommand": "Exit 1 builds, exit 0 skips. This project is attached to the same repository as production, so without this it would also build `main` and ship the production configuration under a demo hostname. Only the demo branch builds here.",
   "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" = \"demo\" ]; then exit 1; else exit 0; fi",
-
-  "//rewrites": "Hash routing already resolves every route to index.html; this only catches a hand-typed path. Vercel checks the filesystem before rewrites, so js/ and styles/ are unaffected.",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
-      "//": "The app ships unbundled ES modules at stable URLs, so a browser that caches views/index.js keeps running an old build after a deploy — and a version query on the entry point cannot reach modules it imports by fixed path. Revalidation is the fix: these files are tiny and a 304 costs almost nothing.",
       "source": "/js/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/styles/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
     },
     {
-      "//": "connect-src 'self' is the load-bearing line, and the difference from production. This build has no database client and no credentials, but the policy makes that structural rather than a promise: the browser refuses any request to Supabase, to Google, or to any other host, whatever the JavaScript asks for. form-action 'none' because the build contains no form; noindex because a fixed sample should not rank above the real thing.",
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=(), payment=()" },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=(), payment=()"
+        },
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"
