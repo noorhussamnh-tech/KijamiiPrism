@@ -1,6 +1,6 @@
-# Kijamii Prism — Demonstration Environment
+# Agency Intelligence Prism — Demonstration Environment
 
-A submission-safe build of Kijamii Prism, running on a fixed, fully invented
+A submission-safe build of Agency Intelligence Prism, running on a fixed, fully invented
 dataset. Same eighteen pages, same filters, same calculations, same
 interactions as the production application — different record underneath, and
 no connection to anything.

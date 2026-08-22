@@ -51,7 +51,7 @@ export function renderAbout(root, view) {
       title: 'What Prism is for',
       body: el('div', { class: 'prose' }, [
         el('p', {
-          text: 'Kijamii runs on records kept in spreadsheets — what was billed, what was worked, what was promised. Those records answer real questions, but only to whoever is willing to open four tabs and reconcile them by hand.',
+          text: 'The agency runs on records kept in spreadsheets — what was billed, what was worked, what was promised. Those records answer real questions, but only to whoever is willing to open four tabs and reconcile them by hand.',
         }),
         el('p', {
           text: 'Prism is the reading layer over those records. It joins them once, applies one consistent set of rules, and puts each answer on a page that states the question it answers and the method it used to answer it.',

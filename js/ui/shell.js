@@ -108,10 +108,12 @@ function sidebar() {
       el('span', { class: 'brand__prism', 'aria-hidden': 'true' }),
       el('div', { class: 'brand__text' }, [
         el('p', { class: 'brand__name' }, [
-          el('span', { class: 'brand__kijamii', text: 'KIJAMII ' }),
+          el('span', { class: 'brand__org', text: 'AGENCY INTELLIGENCE ' }),
           el('span', { class: 'brand__word', text: 'PRISM' }),
         ]),
-        el('p', { class: 'brand__ver', text: `${APP_VERSION} · Intelligence Layer` }),
+        // Just the version now: "Intelligence Layer" was a useful descriptor
+        // when the lockup read KIJAMII PRISM, but it repeats the name here.
+        el('p', { class: 'brand__ver', text: APP_VERSION }),
       ]),
     ]),
 

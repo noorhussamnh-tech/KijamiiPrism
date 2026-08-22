@@ -185,8 +185,14 @@ a {
   line-height: 1.2;
 }
 
-.brand__kijamii {
+/* The organisation half of the lockup. Two words rather than one, so it is
+   allowed to wrap above the accent word instead of being squeezed. */
+.brand__org {
   color: var(--text);
+  display: block;
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
 }
 
 .brand__word {

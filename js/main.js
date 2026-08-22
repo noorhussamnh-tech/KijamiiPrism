@@ -88,6 +88,6 @@ subscribe(repaint);
 onRouteChange(() => repaint());
 
 document.documentElement.dataset.demo = 'true';
-document.title = `Kijamii Prism — ${DEMO_LABEL}`;
+document.title = `Agency Intelligence Prism — ${DEMO_LABEL}`;
 
 enterApp();

@@ -13,7 +13,7 @@
  */
 
 const REFUSAL =
-  'Kijamii Prism (demo): there is no database client in this build. ' +
+  'Agency Intelligence Prism (demo): there is no database client in this build. ' +
   'All figures come from js/demo/dataset.js.';
 
 /**
