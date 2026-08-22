@@ -15,9 +15,13 @@ export const ADMIN_EMAIL = 'noorhussam.nh@gmail.com';
 export const APP_VERSION = 'v2.4';
 
 /**
- * The workbook every figure traces back to. Set this to the Google Sheet URL
- * and the "SOURCE WORKBOOK ↗" pills throughout the app become live links.
- * Left null deliberately rather than pointed at a guess — a source link that
- * goes to the wrong document is worse than one that admits it is unset.
+ * The workbook every figure traces back to. The "SOURCE WORKBOOK ↗" pills
+ * throughout the app link here, so any number on screen can be checked
+ * against the row it came from.
+ *
+ * Opening it still requires Google access — the link is a pointer, not a
+ * bypass. Anyone without permission on the Sheet sees Google's own request
+ * screen, which is the correct outcome.
  */
-export const SOURCE_WORKBOOK_URL = null;
+export const SOURCE_WORKBOOK_URL =
+  'https://docs.google.com/spreadsheets/d/1OD0gmT-LI8rHxKBQEfVFUmnY3D4noSwEKz1ia5TqRLY/edit';
